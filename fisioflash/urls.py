@@ -17,8 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
+from rest_framework.routers import DefaultRouter
+from clinica import viewsets
+from clinica.views import CustomAuthToken
+
+router = DefaultRouter()
+router.register(r'usuario', viewsets.UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/fisioflash/clinica/', include('clinica.urls')),
+    path('api/token/', CustomAuthToken.as_view(), name='token_obtain'),
 ]
