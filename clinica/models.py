@@ -39,9 +39,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         PACIENTE = 'PAC', _('Paciente')
         FISIOTERAPEUTA = 'FIS', _('Fisioterapeuta')
 
+    class Gender(models.TextChoices):
+        MASCULINO = 'M', 'Masculino'
+        FEMININO = 'F', 'Feminino'
+        OUTRO = 'O', 'Outro'
+
     username = models.CharField(
-        _('username'), max_length=15, unique=True,
-        help_text=_('Required. 15 characters or fewer. Letters, numbers and @/./+/-/_ characters'),
+        _('username'), max_length=100, unique=True,
+        help_text=_('Required. 100 characters or fewer. Letters, numbers and @/./+/-/_ characters'),
         validators=[
             validators.RegexValidator(
                 re.compile(r'^[\w.@+-]+$'), _('Enter a valid username.'), _('invalid')
@@ -65,6 +70,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('User Type'), max_length=3, choices=UserType.choices, default=UserType.PACIENTE
     )
 
+    data_nascimento = models.DateField(db_column='data_nascimento', null=True)
+    sexo = models.CharField(db_column='sexo', max_length=1, choices=Gender.choices, null=False, default=Gender.FEMININO)
     cpf = models.CharField(db_column='cpf', max_length=11, unique=True, null=False)
     rg = models.CharField(db_column='rg', max_length=10, unique=True, null=False)
     telefone = models.CharField(db_column='telefone', max_length=15, null=False)
@@ -72,11 +79,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     numero = models.CharField(db_column='numero', max_length=10, null=False)
     bairro = models.CharField(db_column='bairro', max_length=100, null=False)
     cep = models.CharField(db_column='cep', max_length=8, null=False)
-    data_nascimento = models.DateField(db_column='data_nascimento', null=True)
 
     registro_profissional = models.CharField(db_column='registro_profissional', max_length=20, unique=True, null=True,
                                              blank=True)
-    especializacoes = models.TextField(db_column='especializacoes', null=True, blank=True)
+    curriculo = models.FileField(db_column='curriculo', upload_to='curriculos/', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']

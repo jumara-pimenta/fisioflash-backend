@@ -20,6 +20,8 @@ from django.conf.urls import include
 from rest_framework.routers import DefaultRouter
 from clinica import viewsets
 from clinica.views import CustomAuthToken
+from django.conf.urls.static import static
+from django.conf import settings
 
 router = DefaultRouter()
 router.register(r'usuario', viewsets.UserViewSet)
@@ -29,3 +31,6 @@ urlpatterns = [
     path('api/fisioflash/clinica/', include('clinica.urls')),
     path('api/token/', CustomAuthToken.as_view(), name='token_obtain'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
