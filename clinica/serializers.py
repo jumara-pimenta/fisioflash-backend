@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         try:
             username = validated_data.get('username', validated_data['email'])
-            print("Username utilizado:", username) 
             user = models.User(
                 email=validated_data['email'],
                 first_name=validated_data['first_name'],
@@ -44,4 +43,19 @@ class ServicoSerializer(serializers.ModelSerializer):
 class CasoClinicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CasoClinico
+        fields = '__all__'
+
+class ServicoFisioterapeutaSerializer(serializers.ModelSerializer):
+    fisioterapeuta = UserSerializer(read_only=True)  # Usado para retornar os dados completos no output
+    fisioterapeuta_id = serializers.PrimaryKeyRelatedField(queryset=models.User.objects.filter(user_type='FIS'), write_only=True, source='fisioterapeuta')  # Usado para o input (aceitar ID)
+    servico = ServicoSerializer(read_only=True)  # Usado para retornar os dados completos no output
+    servico_id = serializers.PrimaryKeyRelatedField(queryset=models.Servico.objects.all(), write_only=True, source='servico')  # Usado para o input (aceitar ID)
+
+    class Meta:
+        model = models.ServicoFisioterapeuta
+        fields = '__all__'
+
+class SolicitacaoAtendimentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SolicitacaoAtendimento
         fields = '__all__'

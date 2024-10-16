@@ -147,3 +147,19 @@ class CasoClinico(models.Model):
 
     class Meta:
         db_table = 'caso_clinico'
+
+class SolicitacaoAtendimento(models.Model):
+    paciente = models.ForeignKey(User, on_delete=models.DO_NOTHING, limit_choices_to={'user_type': 'PAC'},  related_name='solicitacoes_paciente')
+    fisioterapeuta = models.ForeignKey(User, on_delete=models.DO_NOTHING, limit_choices_to={'user_type': 'FIS'},  related_name='solicitacoes_fisioterapeuta')
+    servico = models.ForeignKey(Servico, on_delete=models.DO_NOTHING)
+    caso_clinico = models.OneToOneField(CasoClinico, on_delete=models.DO_NOTHING, null=True, blank=True)
+    status = models.CharField(
+        max_length=20, 
+        choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'), ('concluido', 'Concluído')],
+        default='pendente'
+    )
+    data_solicitacao = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'solicitacao_atendimento'
+
