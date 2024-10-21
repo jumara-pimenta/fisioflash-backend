@@ -15,6 +15,6 @@ class CustomAuthToken(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'user_id': user.pk,
-                'email': user.email
+                'user_type': user.user_type
             })
         return Response({'error': 'Unable to log in with provided credentials.'}, status=400)

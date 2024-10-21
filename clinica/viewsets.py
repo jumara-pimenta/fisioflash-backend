@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from clinica import models, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
@@ -30,3 +31,26 @@ class ServicoFisioterapeutaViewSet(viewsets.ModelViewSet):
 class SolicitacaoAtendimentoViewSet(viewsets.ModelViewSet):
     queryset = models.SolicitacaoAtendimento.objects.all()
     serializer_class = serializers.SolicitacaoAtendimentoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+
+        user = self.request.user
+
+        if user.user_type == 'FIS':
+            return models.SolicitacaoAtendimento.objects.filter(fisioterapeuta=user)
+
+        if user.user_type == 'PAC':
+            return models.SolicitacaoAtendimento.objects.filter(paciente=user)
+
+        return models.Serializers.SolicitacaoAtendimento.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.status = request.data.get('status', instance.status)
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)

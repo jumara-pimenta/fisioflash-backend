@@ -83,6 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     registro_profissional = models.CharField(db_column='registro_profissional', max_length=20, unique=True, null=True,
                                              blank=True)
     curriculo = models.FileField(db_column='curriculo', upload_to='curriculos/', null=True, blank=True)
+    minibio = models.CharField(db_column='minibio', max_length=800, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -155,8 +156,8 @@ class SolicitacaoAtendimento(models.Model):
     caso_clinico = models.OneToOneField(CasoClinico, on_delete=models.DO_NOTHING, null=True, blank=True)
     status = models.CharField(
         max_length=20, 
-        choices=[('pendente', 'Pendente'), ('em andamento', 'Em Andamento'), ('concluido', 'Concluído')],
-        default='pendente'
+        choices=[('Pendente', 'Pendente'), ('Em andamento', 'Em Andamento'), ('Concluído', 'Concluído')],
+        default='Pendente'
     )
     data_solicitacao = models.DateTimeField(auto_now_add=True)
 
