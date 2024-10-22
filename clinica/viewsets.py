@@ -18,6 +18,17 @@ class CasoClinicoViewSet(viewsets.ModelViewSet):
     queryset = models.CasoClinico.objects.all()
     serializer_class = serializers.CasoClinicoSerializer
 
+    def perform_create(self, serializer):
+        caso_clinico = serializer.save()
+
+        # Criar a Solicitação de Atendimento associada ao Caso Clínico
+        models.SolicitacaoAtendimento.objects.create(
+            paciente=caso_clinico.paciente,
+            fisioterapeuta=caso_clinico.servico_fisioterapeuta.fisioterapeuta,
+            servico=caso_clinico.servico_fisioterapeuta.servico,
+            caso_clinico=caso_clinico
+        )
+
 class ServicoFisioterapeutaViewSet(viewsets.ModelViewSet):
     queryset = models.ServicoFisioterapeuta.objects.all()
     serializer_class = serializers.ServicoFisioterapeutaSerializer

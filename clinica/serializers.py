@@ -79,7 +79,8 @@ class SolicitacaoAtendimentoSerializer(serializers.ModelSerializer):
     fisioterapeuta_nome = serializers.ReadOnlyField(source='fisioterapeuta.get_full_name')
     descricao_caso_clinico = serializers.ReadOnlyField(source='caso_clinico.descricao')
     especialidade_servico = serializers.ReadOnlyField(source='servico.especialidade')
+    paciente_telefone = serializers.ReadOnlyField(source='paciente.telefone')
 
     class Meta:
         model = models.SolicitacaoAtendimento
-        fields = ['id', 'paciente', 'paciente_nome', 'fisioterapeuta', 'fisioterapeuta_nome', 'servico', 'especialidade_servico', 'status', 'data_solicitacao', 'caso_clinico', 'descricao_caso_clinico']
+        fields = ['id', 'paciente', 'paciente_nome', 'fisioterapeuta', 'fisioterapeuta_nome', 'servico', 'paciente_telefone', 'especialidade_servico', 'status', 'data_solicitacao', 'caso_clinico', 'descricao_caso_clinico']
